@@ -279,6 +279,15 @@ function renderNotes() {
     mdLink.href = githubMarkdownUrl(item.path);
     mdLink.textContent = 'note markdown';
 
+    if (item.pdfUrl) {
+      const pdfLink = document.createElement('a');
+      pdfLink.href = item.pdfUrl;
+      pdfLink.target = '_blank';
+      pdfLink.rel = 'noreferrer';
+      pdfLink.textContent = 'pdf';
+      mdLink.before(pdfLink);
+    }
+
     makeClickableCard(node, item.path);
     els.notesList.appendChild(node);
   }

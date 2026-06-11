@@ -79,6 +79,16 @@ def list_field(raw: str) -> list[str]:
     return lines
 
 
+def http_url(raw: str) -> str:
+    value = clean_md(raw).strip()
+    return value if re.match(r'^https?://', value) else ''
+
+
+def doi_value(raw: str) -> str:
+    value = clean_md(raw).strip()
+    return re.sub(r'^https?://doi\.org/', '', value, flags=re.I)
+
+
 def git_added_timestamp(path: Path) -> str:
     rel = path.relative_to(ROOT)
     try:
@@ -140,8 +150,11 @@ def parse_paper_note(path: Path) -> dict[str, object]:
     year = clean_md(meta.get('year', '') or basic_info_value('Year'))
     venue = clean_md(meta.get('venue', '') or basic_info_value('Venue / source'))
     date_read = clean_md(meta.get('date_read', '') or basic_info_value('Date read'))
-    paper_url = clean_md(meta.get('paper_url', '') or basic_info_value('Link'))
+    paper_url = http_url(meta.get('paper_url', '') or basic_info_value('Link'))
     why_selected = clean_md(meta.get('why_selected', '') or basic_info_value('Why selected in one sentence'))
+    pdf_url = http_url(meta.get('pdf_url', '') or basic_info_value('PDF'))
+    doi = doi_value(meta.get('doi', '') or basic_info_value('DOI'))
+    tags = [clean_md(item) for item in list_field(meta.get('tags', '') or basic_info_value('Tags'))]
 
     slug = meta.get('slug') or slugify(path.stem)
     added_at = git_added_timestamp(path)
@@ -155,16 +168,17 @@ def parse_paper_note(path: Path) -> dict[str, object]:
         'dateRead': date_read,
         'addedAt': added_at,
         'paperUrl': paper_url,
-        'pdfUrl': clean_md(meta.get('pdf_url', '')),
+        'pdfUrl': pdf_url,
+        'doi': doi,
         'verdict': clean_md(meta.get('verdict', '') or verdict),
         'verdictText': verdict_text,
-        'tags': [clean_md(item) for item in list_field(meta.get('tags', ''))],
+        'tags': tags,
         'whySelected': why_selected,
         'summary': summary,
         'whyItMatters': why_it_matters,
         'finalDecision': final_decision,
         'path': rel_path,
-        'searchText': ' '.join(filter(None, [title, authors, venue, year, why_selected, summary, why_it_matters, final_decision, clean_md(body), ' '.join(list_field(meta.get('tags', '')))])),
+        'searchText': ' '.join(filter(None, [title, authors, venue, year, doi, why_selected, summary, why_it_matters, final_decision, clean_md(body), ' '.join(tags)])),
     }
 
 

@@ -9,6 +9,7 @@
 * Link: https://doi.org/10.3389/fcteg.2024.1452442
 * DOI: 10.3389/fcteg.2024.1452442
 * PDF: https://www.frontiersin.org/articles/10.3389/fcteg.2024.1452442/pdf
+* Tags: vagus nerve stimulation, targeted plasticity therapy, neurorehabilitation, closed-loop neuromodulation, autonomic physiology
 * Date read: 2026-06-11
 * Date surfaced: 2026-06-11
 * Surfaced via: Tracy in #pocket-brains
